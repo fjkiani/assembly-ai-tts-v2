@@ -34,8 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
-# downloaded videos (large files, local-only)
-/public/videos/
+# downloaded videos (large files, local-only — except demo.mp4)
+/public/videos/*
+!/public/videos/demo.mp4
 /public/tts/
 
 # vercel
