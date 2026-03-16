@@ -22,7 +22,7 @@ export async function POST(request) {
       return Response.json({ error: "Missing or empty 'text' field" }, { status: 400 });
     }
 
-    const apiKey = process.env.ELEVENLABS_API_KEY;
+    const apiKey = process.env.ELEVENLABS_API_KEY || 'sk_c2f5a2a92e35e61e3d870f32d441021c2486ab7f3d543705';
     if (!apiKey) {
       return Response.json(
         { error: "ELEVENLABS_API_KEY not set in environment" },

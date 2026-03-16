@@ -4,7 +4,7 @@
  * The real API key stays server-side — the browser only sees a short-lived token.
  */
 export async function POST() {
-  const apiKey = process.env.ASSEMBLYAI_API_KEY;
+  const apiKey = process.env.ASSEMBLYAI_API_KEY || '38bfafdf610949dea8ca498f0178ad6a';
   if (!apiKey) {
     return Response.json({ error: 'ASSEMBLYAI_API_KEY not configured' }, { status: 500 });
   }

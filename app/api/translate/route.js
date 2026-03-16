@@ -4,7 +4,7 @@
  * Mirrors the LLM Gateway step from the original assemblyai_service.py.
  */
 export async function POST(request) {
-  const cohereKey = process.env.COHERE_API_KEY;
+  const cohereKey = process.env.COHERE_API_KEY || 'OIlUp71HbmDsKX1iDCCBIIwiYvDG1yTtYugPoQ1h';
   if (!cohereKey) {
     return Response.json({ error: 'COHERE_API_KEY not configured' }, { status: 500 });
   }
