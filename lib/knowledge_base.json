@@ -6,15 +6,15 @@
   },
   "session": {
     "mode": "interview",
-    "output_format": "bullets",
-    "max_bullets": 3,
-    "tone": "punchy engineering jargon",
+    "output_format": "structured",
+    "max_bullets": 4,
+    "tone": "senior engineer explaining to a peer",
     "constraints": [
-      "No intro or outro",
-      "No paragraphs",
-      "Use engineering jargon (VPC, LangFuse, RBAC, CI/CD, HIPAA)",
-      "Tie every answer back to candidate's Talend, JediLabs, iMedicare, or 1stdibs experience",
-      "Each bullet must be one sentence max — readable in 2 seconds"
+      "REASON about the question first — what are they really asking? Then formulate a cohesive answer",
+      "Use candidate experience as SUPPORTING EVIDENCE, not the answer itself — cite specifics only when directly relevant",
+      "DO NOT dump resume bullets — synthesize a narrative that addresses the question's core intent",
+      "Match technical depth to the question — if they ask 'how', explain the approach; if they ask 'tell me about', tell a story",
+      "Each bullet should flow logically into the next — not be an isolated resume line item"
     ]
   },
   "company": {
