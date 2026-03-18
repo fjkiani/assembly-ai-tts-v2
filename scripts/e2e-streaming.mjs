@@ -121,9 +121,10 @@ async function streamAndObserve(pcmBuffer, token) {
       token,
       sample_rate: String(SAMPLE_RATE),
       speech_model: 'u3-rt-pro',
+      language_detection: 'true',
     });
     if (DOMAIN_KEYTERMS.length > 0) {
-      wsParams.append('keyterms', JSON.stringify(DOMAIN_KEYTERMS));
+      wsParams.append('keyterms_prompt', JSON.stringify(DOMAIN_KEYTERMS));
     }
 
     const ws = new WebSocket(`wss://streaming.assemblyai.com/v3/ws?${wsParams.toString()}`);
