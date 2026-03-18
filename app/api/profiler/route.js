@@ -25,12 +25,60 @@ function getKnowledgeBase() {
   }
 }
 
+/**
+ * Deep-merge LLM delta output into persistent profiler state.
+ * The LLM outputs ONLY new insights. This function merges them.
+ */
+function deepMergeProfilerState(currentState, delta) {
+  const state = currentState || {
+    interviewers: [],
+    alpha_telemetry: { pillars_deployed: [], pillars_missing: [], is_off_script: false, off_script_reason: null },
+    conversation_phase: 'opening',
+    room_power: 'Neutral',
+  };
+
+  // Merge new interviewer insights
+  if (delta.new_interviewer_insights?.length > 0) {
+    for (const insight of delta.new_interviewer_insights) {
+      const existing = state.interviewers.find(i => i.name === insight.name);
+      if (existing) {
+        // Patch existing interviewer — only overwrite non-null fields
+        if (insight.emotional_state) existing.emotional_state = insight.emotional_state;
+        if (insight.corporate_trauma) existing.corporate_trauma = insight.corporate_trauma;
+        if (insight.the_exploit) existing.the_exploit = insight.the_exploit;
+      } else {
+        state.interviewers.push(insight);
+      }
+    }
+  }
+
+  // Merge newly deployed pillars (dedupe)
+  if (delta.new_pillars_deployed?.length > 0) {
+    const deployed = new Set(state.alpha_telemetry.pillars_deployed || []);
+    for (const p of delta.new_pillars_deployed) deployed.add(p);
+    state.alpha_telemetry.pillars_deployed = [...deployed];
+    // Recalculate missing pillars
+    const allPillars = getKnowledgeBase()?.candidate?.campaign_pillars || [];
+    state.alpha_telemetry.pillars_missing = allPillars.filter(p => !deployed.has(p));
+  }
+
+  // Update off-script status
+  if (delta.new_off_script?.detected) {
+    state.alpha_telemetry.is_off_script = true;
+    state.alpha_telemetry.off_script_reason = delta.new_off_script.reason;
+  }
+
+  // Always update phase
+  if (delta.conversation_phase) state.conversation_phase = delta.conversation_phase;
+
+  return state;
+}
+
 export async function POST(request) {
   try {
     const { currentProfileState, latestChunk } = await request.json();
 
     if (!latestChunk || (Array.isArray(latestChunk) && latestChunk.length === 0)) {
-      // Nothing to analyze
       return Response.json(currentProfileState || { interviewers: [], conversation_phase: 'opening', room_power: 'Neutral' });
     }
 
@@ -45,20 +93,21 @@ export async function POST(request) {
 
     const provider = (process.env.LLM_PROVIDER || 'cohere').toLowerCase();
 
-    let result;
+    let delta;
     if (provider === 'groq') {
-      result = await callGroqJSON(messages);
+      delta = await callGroqJSON(messages);
     } else {
-      result = await callCohereJSON(messages);
+      delta = await callCohereJSON(messages);
     }
 
-    return Response.json(result);
+    // Deep-merge LLM delta into persistent state (not LLM state-patching)
+    const mergedState = deepMergeProfilerState(currentProfileState, delta);
+    return Response.json(mergedState);
   } catch (err) {
     console.error('[profiler] Error:', err);
-    // On error, return previous state or empty — never crash the loop
     return Response.json(
       { interviewers: [], conversation_phase: 'unknown', room_power: 'Neutral', _error: err.message },
-      { status: 200 } // Still 200 so frontend doesn't break
+      { status: 200 }
     );
   }
 }
