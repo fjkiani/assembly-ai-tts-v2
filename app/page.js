@@ -52,7 +52,7 @@ export default function CopilotPage() {
     isStreaming, transcripts, partialText, rawResponse,
     copilotLatency, bulletHistory, metrics, status, error,
     held, speakingStartRef, profilerState, activeQuestion,
-    start, stop, toggleHold, flushActiveContext,
+    start, stop, toggleHold, flushActiveContext, triggerRescue,
   } = useTranscription(capabilities, sessionContext);
 
   const [mode, setMode] = useState('copilot');
@@ -66,17 +66,15 @@ export default function CopilotPage() {
   }, [bulletHistory, rawResponse, status]);
 
   // ── Keyboard: ESC=cover, Space=hold, Ctrl+Shift+S=autoStealth ──
+  // Keyboard shortcuts:
+  // ESC = toggle cover mode
+  // Spacebar = SOS Rescue (handled in useTranscription.js, NOT here)
+  // Ctrl+Shift+S = toggle auto-stealth
+  // Backspace/Delete = flush active context ("Burn It")
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') setMode((m) => m === 'copilot' ? 'cover' : 'copilot');
-    if (e.code === 'Space' && e.target === document.body) {
-      e.preventDefault();
-      // Space toggles autoCopilot OFF → acts as manual fire
-      if (!capabilities.autoCopilot) {
-        toggleHold(); // Manual trigger when auto-fire is off
-      } else {
-        toggleHold(); // Standard hold toggle
-      }
-    }
+    // NOTE: Spacebar is reserved for SOS Rescue in useTranscription.js
+    // Do NOT handle it here — it causes a conflict
     if (e.ctrlKey && e.shiftKey && e.code === 'KeyS') {
       e.preventDefault();
       toggleCapability('autoStealth');
@@ -86,7 +84,7 @@ export default function CopilotPage() {
       e.preventDefault();
       flushActiveContext();
     }
-  }, [toggleHold, capabilities.autoCopilot, toggleCapability, flushActiveContext]);
+  }, [toggleCapability, flushActiveContext]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
