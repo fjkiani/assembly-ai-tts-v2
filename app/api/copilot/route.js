@@ -22,7 +22,7 @@ function getKnowledgeBase() {
 
 export async function POST(request) {
   try {
-    const { text, history, profilerState, clipboardCode, terminalMode, clientTelemetry } = await request.json();
+    const { text, speaker, history, profilerState, clipboardCode, terminalMode, clientTelemetry } = await request.json();
     if (!text || !text.trim()) {
       return Response.json({ error: 'No text provided' }, { status: 400 });
     }
@@ -39,7 +39,7 @@ export async function POST(request) {
 
     const systemPrompt = isCodingPhase
       ? buildTerminalModePrompt(kb)
-      : buildTacticalPrompt(kb, profilerState || null, clientTelemetry || {});
+      : buildTacticalPrompt(kb, profilerState || null, clientTelemetry || {}, speaker || 'interviewer');
 
     const maxTokens = isCodingPhase ? 2048 : 1000;
     if (isCodingPhase) {
@@ -60,7 +60,7 @@ export async function POST(request) {
       }
     }
 
-    messages.push({ role: 'user', content: buildUserMessage(text, '', clipboardCode || '') });
+    messages.push({ role: 'user', content: buildUserMessage(text, '', clipboardCode || '', speaker || 'interviewer') });
 
     const provider = (process.env.LLM_PROVIDER || 'cohere').toLowerCase();
 
