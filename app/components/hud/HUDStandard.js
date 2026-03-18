@@ -1,7 +1,7 @@
 /**
- * HUDStandard — Standard 5-section HUD renderer
+ * HUDStandard — Standard HUD renderer (no BAIT)
  * 
- * Renders: [MOTIVE] → [DELIVERY] → [THE MOVE] → [THE BAIT] → [THE DIAGNOSTIC]
+ * Renders: [MOTIVE] → [DELIVERY] → [THE MOVE] → [THE DIAGNOSTIC]
  * 
  * Props: { parsed } — output of parseHUDSections with phase='hud'
  */
@@ -28,12 +28,6 @@ export default function HUDStandard({ parsed }) {
         <div className={styles.move}>
           <span className={`${styles.label} ${styles.moveLabel}`}>THE MOVE</span>
           <RenderSegments segments={parseSegments(parsed.move)} className={styles.moveContent} />
-        </div>
-      )}
-      {parsed.bait && (
-        <div className={styles.bait}>
-          <span className={`${styles.label} ${styles.baitLabel}`}>🎣 BAIT</span>
-          <RenderSegments segments={parseSegments(parsed.bait)} className={styles.baitContent} />
         </div>
       )}
       {parsed.diagnostic && (

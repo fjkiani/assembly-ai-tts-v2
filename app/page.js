@@ -49,7 +49,7 @@ export default function CopilotPage() {
   const {
     isStreaming, transcripts, partialText, rawResponse,
     copilotLatency, bulletHistory, metrics, status, error,
-    held, speakingStartRef, profilerState,
+    held, speakingStartRef, profilerState, activeQuestion,
     start, stop, toggleHold, flushActiveContext,
   } = useTranscription(capabilities);
 
@@ -169,8 +169,9 @@ export default function CopilotPage() {
   // ── Stealth cover mode ──
   if (mode === 'cover') return <CoverPage />;
 
-  // ── Derived state (no new state, just computed) ──
-  const latestQuestion = transcripts.length > 0 ? transcripts[transcripts.length - 1].text : null;
+  // Use activeQuestion (the FULL accumulated text sent to copilot) when streaming,
+  // fall back to last transcript for display between turns
+  const latestQuestion = activeQuestion || (transcripts.length > 0 ? transcripts[transcripts.length - 1].text : null);
   const isActivelyStreaming = status === 'thinking' || status === 'streaming';
 
   return (

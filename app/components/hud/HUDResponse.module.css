@@ -48,46 +48,46 @@
 
 /* ═══ STANDARD HUD ═══ */
 
-/* MOTIVE — dim, peripheral radar */
+/* MOTIVE — peripheral radar, but readable */
 .motive {
-  padding: 6px 12px;
+  padding: 8px 14px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  background: rgba(85, 85, 85, 0.04);
+  gap: 4px;
+  background: rgba(120, 120, 120, 0.06);
   border-radius: 8px;
-  border-left: 2px solid rgba(85, 85, 85, 0.15);
+  border-left: 2px solid rgba(120, 120, 120, 0.25);
 }
 .motiveLabel {
-  color: #888;
-  background: rgba(85, 85, 85, 0.10);
+  color: #aaa;
+  background: rgba(120, 120, 120, 0.12);
 }
 .motiveText {
   font-family: var(--font-sans);
-  font-size: 12px;
-  color: #777;
+  font-size: 13px;
+  color: #999;
   font-style: italic;
   line-height: 1.5;
 }
 
 /* DELIVERY — cyan, pacing directive */
 .delivery {
-  padding: 6px 12px;
+  padding: 8px 14px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  background: rgba(102, 204, 204, 0.03);
+  gap: 4px;
+  background: rgba(102, 204, 204, 0.04);
   border-radius: 8px;
-  border-left: 2px solid rgba(102, 204, 204, 0.20);
+  border-left: 2px solid rgba(102, 204, 204, 0.25);
 }
 .deliveryLabel {
-  color: #66cccc;
-  background: rgba(102, 204, 204, 0.10);
+  color: #77dddd;
+  background: rgba(102, 204, 204, 0.12);
 }
 .deliveryText {
   font-family: var(--font-sans);
-  font-size: 12px;
-  color: #55bbbb;
+  font-size: 13px;
+  color: #66cccc;
   font-style: italic;
   line-height: 1.5;
 }
