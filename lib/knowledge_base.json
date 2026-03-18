@@ -1,0 +1,125 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "description": "Dynamic knowledge base for the interview copilot. Fill before each session.",
+    "last_updated": "2026-03-17"
+  },
+  "session": {
+    "mode": "interview",
+    "output_format": "bullets",
+    "max_bullets": 3,
+    "tone": "punchy engineering jargon",
+    "constraints": [
+      "No intro or outro",
+      "No paragraphs",
+      "Use engineering jargon (VPC, LangFuse, RBAC, CI/CD, HIPAA)",
+      "Tie every answer back to candidate's Talend, JediLabs, iMedicare, or 1stdibs experience",
+      "Each bullet must be one sentence max — readable in 2 seconds"
+    ]
+  },
+  "company": {
+    "name": "",
+    "description": "",
+    "team_size": null,
+    "tech_stack": [],
+    "recent_incidents": [],
+    "culture_notes": "",
+    "key_initiatives": []
+  },
+  "interviewers": [
+    {
+      "name": "",
+      "title": "",
+      "background": "",
+      "priorities": [],
+      "style_notes": ""
+    }
+  ],
+  "candidate": {
+    "name": "Fahad J. Kiani",
+    "current_role": "Principal AI Engineer at JediLabs.org",
+    "experience_highlights": [
+      "8+ years building production-grade systems at intersection of healthcare, genomics, and generative AI",
+      "Scaled SaaS platform to $177M Omnicell acquisition at iMedicare",
+      "Engineered $1B in clinical savings at AstraZeneca",
+      "Published 5 peer-reviewed AACR 2026 abstracts on AI-driven cancer therapeutics",
+      "AWS-certified Solutions Architect and ML Specialist"
+    ],
+    "key_projects": [
+      "CrisPRO.ai: AI-driven precision oncology platform — 96.6% mechanism-match accuracy, 5x AACR published",
+      "ClearMyMind.xyz: 3-agent autonomous revenue orchestrator — X12 EDI, AssemblyAI, FHIR, Twilio — cut claim denial 20% to <5%, cost-to-collect $22 to $4.50",
+      "24/7 Voice AI agent via VAPI + NLP pipeline — reduced missed leads 40%, 3x inbound capacity",
+      "26 MCP servers with automated discovery — dev onboarding from 2 hours to 5 minutes",
+      "4-pillar adversarial trap suite (Multi-hop, Temporal Logic, Chained Execution, Tool-misuse) — eliminated 23%+ silent failures across Cohere/Claude/GPT"
+    ],
+    "certifications": [
+      "AWS Machine Learning Specialist",
+      "AWS Professional Solutions Architect"
+    ],
+    "campaign_pillars": [
+      "Async Event-Driven Architecture (SQS/Kafka) — 1TB+ daily, 26 production envs",
+      "Developer Velocity & Simplification — dev onboarding 2hr→5min, 26 MCP servers",
+      "Pragmatic Refactoring — 65% incident reduction, $850K infra savings",
+      "AI Eval Frameworks — Pass@K, LLM-as-Judge, 50+ domain benchmarks",
+      "Revenue Impact — $177M acquisition, 85% POC-to-win, 1000% YoY growth"
+    ],
+    "talking_points": [
+      "At Talend: scaled 100+ ETL pipelines across 26 production environments with 15-minute CI/CD security pipelines, SOC2 and HIPAA compliant",
+      "At Talend: 85% POC-to-win rate, 500+ Fortune 500 accounts, $40 ROI per $1 delivered",
+      "At Talend: reduced dev time 40% engineering HIPAA-compliant genomic pipelines via Kafka + Snowflake processing 1TB+ daily",
+      "At Talend: 65% reduction in production incidents, $850K+ infrastructure savings",
+      "At iMedicare: scaled platform 500 to 5K+ pharmacies, 1000% YoY growth, led to $177M acquisition",
+      "At iMedicare: reduced Medicare enrollment from 3+ hours to 20 minutes via API integration",
+      "At iMedicare: accelerated pre-sales cycle 85% — demo-to-sale from 2 months to 12 days via MEDDIC",
+      "At 1stdibs: pioneered Trade architecture (GraphQL, REST, Salesforce), 5K+ dealer onboarding, pre-IPO scaling $250M GMV platform",
+      "At 1stdibs: 200% increase dealer acquisition efficiency, $1M+ quarterly sales, 28-country rollout to 5M+ monthly users",
+      "At JediLabs: deployed ML inference on AWS SageMaker — 45% latency reduction for production agentic workloads",
+      "At JediLabs: benchmark framework (pass@k, LLM-as-judge) across 50+ domains",
+      "Teaching: 97% internship placement rate, 82% employment rate for CUNY students"
+    ]
+  },
+  "domain_keyterms": [
+    "CI/CD", "HIPAA", "SOC2", "Zero-Trust", "RBAC", "VPC", "IAM",
+    "Kubernetes", "Terraform", "AWS", "SageMaker", "Lambda",
+    "Datadog", "LangFuse", "OpenTelemetry",
+    "LLM", "RAG", "MCP", "LangChain", "Pydantic AI",
+    "ETL", "Talend", "Snowflake", "Kafka", "Spark", "BigQuery",
+    "FHIR", "HL7", "X12 EDI",
+    "GraphQL", "REST", "Node.js", "React", "Next.js",
+    "Okta", "Auth0", "OIDC", "SAML",
+    "Docker", "EKS", "Modal",
+    "Neo4j", "Weaviate", "Supabase",
+    "GDPR", "PCI DSS", "ISO 27001",
+    "AlphaFold", "CRISPR", "Evo2"
+  ],
+  "playbook": {
+    "opening_hooks": [
+      "At Talend I built exactly this — let me walk you through it",
+      "We solved this at JediLabs with a similar architecture",
+      "This is the same pattern I used scaling iMedicare to the $177M acquisition"
+    ],
+    "closing_anchors": [
+      "I can have a working POC in the first sprint",
+      "I've done this at production scale — 26 environments, SOC2 certified",
+      "My AWS ML Specialist certification covers this exact domain"
+    ],
+    "pivot_phrases": [
+      "The way I'd frame this for your team specifically",
+      "What I learned from shipping this in healthcare specifically",
+      "The compliance angle here is critical — at Talend we solved it with"
+    ],
+    "power_stats": [
+      "$177M acquisition (iMedicare)",
+      "85% POC-to-win rate (Talend)",
+      "96.6% mechanism-match accuracy (CrisPRO)",
+      "45% latency reduction on SageMaker (JediLabs)",
+      "1000% YoY growth (iMedicare)",
+      "$850K infrastructure savings (Talend)",
+      "5 AACR 2026 publications",
+      "23% silent failure elimination via adversarial testing",
+      "Claim denial rate 20% to <5% (ClearMyMind)",
+      "500+ Fortune 500 accounts closed (Talend)"
+    ]
+  },
+  "knowledge_docs": []
+}

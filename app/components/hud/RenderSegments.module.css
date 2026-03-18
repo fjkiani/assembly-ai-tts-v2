@@ -1,0 +1,63 @@
+.root {
+  /* Wrapper div for segment list — inherits className from parent */
+}
+
+/* ── Bullet lines ── */
+.bullet {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 2px 0;
+  animation: fadeIn 0.15s ease;
+}
+
+.marker {
+  color: var(--accent);
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.text {
+  font-family: var(--font-sans);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--accent);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* ── Code blocks ── */
+.codeBlock {
+  background: #0d1117;
+  border: 1px solid #1a2332;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 6px 0;
+  position: relative;
+  overflow-x: auto;
+}
+
+.codeLang {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.codeBlock code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #c9d1d9;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}

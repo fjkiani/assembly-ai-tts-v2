@@ -1,0 +1,111 @@
+/* ── FollowUpPanel — Post-session intelligence brief ── */
+
+.panel {
+  flex: 0 0 auto;
+  max-height: 55vh;
+  overflow-y: auto;
+  border-top: 1px solid #333;
+  background: #0a0f14;
+  padding: 16px 20px;
+}
+
+.panel::-webkit-scrollbar { width: 4px; }
+.panel::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.copyBtn {
+  background: transparent;
+  border: 1px solid var(--text-muted);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copyBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Markdown renderer ── */
+.md { line-height: 1.6; }
+.spacer { height: 8px; }
+
+.h2 {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 16px 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(0,255,136,0.15);
+}
+
+.h3 {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: #88aaff;
+  margin: 10px 0 4px 0;
+}
+
+.p {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #cccccc;
+  margin: 3px 0;
+}
+
+.p b, .p strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.numbered {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #dddddd;
+  padding: 4px 0 4px 8px;
+  border-left: 2px solid var(--accent-dim);
+  margin: 3px 0;
+}
+
+.bullet {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-dim);
+  padding-left: 16px;
+  position: relative;
+  margin: 2px 0;
+}
+
+.bullet::before {
+  content: '•';
+  position: absolute;
+  left: 4px;
+  color: var(--accent);
+}
+
+.tableRow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  padding: 1px 0;
+}

@@ -1,0 +1,42 @@
+/* ── ConversationTurn — Single Q&A pair ── */
+
+.turn {
+  padding: 10px 0;
+  border-bottom: 1px solid #111;
+  animation: turnIn 0.2s ease;
+}
+
+.question {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.qLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: #111;
+  padding: 1px 5px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.qText {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.response {
+  padding-left: 24px;
+}
+
+@keyframes turnIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

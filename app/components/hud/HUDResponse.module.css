@@ -1,0 +1,191 @@
+/* ── Shared HUD styles (HUDResponse, HUDStandard, HUDOverride) ── */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 2px;
+  display: inline-block;
+  width: fit-content;
+}
+
+/* ── Thinking indicator ── */
+.thinkingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  padding-top: 4px;
+}
+
+.thinkDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  animation: pulseDot 1.2s ease infinite;
+  display: inline-block;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ═══ STANDARD HUD ═══ */
+
+/* MOTIVE — dim, peripheral radar */
+.motive {
+  padding: 2px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.motiveLabel {
+  color: var(--text-dim);
+  background: rgba(85,85,85,0.08);
+}
+.motiveText {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: #777;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* DELIVERY — cyan, pacing directive */
+.delivery {
+  padding: 2px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.deliveryLabel {
+  color: #66cccc;
+  background: rgba(102,204,204,0.06);
+}
+.deliveryText {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: #55bbbb;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* THE MOVE — massive green, primary attack */
+.move {
+  padding: 6px 0;
+}
+.moveLabel {
+  color: var(--accent);
+  background: rgba(0,255,136,0.08);
+}
+.moveContent :global(.bullet .text),
+.moveContent > div > div > span:last-child {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+/* THE BAIT — amber, breadcrumbing */
+.bait {
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  border-left: 2px solid #ddaa00;
+  padding-left: 8px;
+}
+.baitLabel {
+  color: #ddaa00;
+  background: rgba(221,170,0,0.08);
+}
+.baitContent > div > div > span:last-child {
+  font-size: 1rem;
+  color: #eebb33;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* THE DIAGNOSTIC — ice blue */
+.diagnostic {
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  border-left: 2px solid #4488ff;
+  padding-left: 8px;
+}
+.diagLabel {
+  color: #4488ff;
+  background: rgba(68,136,255,0.08);
+}
+.diagContent > div > div > span:last-child {
+  font-size: 1rem;
+  color: #6699ff;
+  font-weight: 500;
+}
+
+/* ═══ OVERRIDE HUD (Red Light) ═══ */
+
+.override {
+  border-left: 3px solid #ff2222;
+  padding-left: 10px;
+  animation: overridePulse 2s ease infinite;
+}
+
+@keyframes overridePulse {
+  0%, 100% { border-left-color: #ff2222; }
+  50% { border-left-color: #ff4444aa; }
+}
+
+.courseCorrect {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ccLabel {
+  color: #ff2222;
+  background: rgba(255,34,34,0.15);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+.ccText {
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ff4444;
+  line-height: 1.35;
+}
+
+.pivotMove {
+  padding: 6px 0;
+  margin-top: 4px;
+}
+
+/* ── Responsive ── */
+@media (max-height: 600px) {
+  .moveContent > div > div > span:last-child { font-size: 1.1rem; }
+}
+@media (min-height: 900px) {
+  .moveContent > div > div > span:last-child { font-size: 1.7rem; }
+}
+@media (min-height: 1200px) {
+  .moveContent > div > div > span:last-child { font-size: 2rem; }
+}

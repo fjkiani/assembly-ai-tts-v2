@@ -1,0 +1,6 @@
+/* ── HistoricalThread — Frozen during streams ── */
+
+.thread {
+  display: flex;
+  flex-direction: column;
+}

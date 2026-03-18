@@ -1,0 +1,23 @@
+/* ── RamblingBanner — 90s speaking guard ── */
+
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255, 20, 20, 0.95);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px 16px;
+  letter-spacing: 0.08em;
+  animation: flash 1s ease infinite;
+}
+
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
