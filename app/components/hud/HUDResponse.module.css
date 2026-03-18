@@ -1,9 +1,9 @@
-/* ── Shared HUD styles (HUDResponse, HUDStandard, HUDOverride) ── */
+/* ── Shared HUD styles (HUDResponse, HUDStandard, HUDOverride) — UPGRADED ── */
 
 .container {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   padding: 4px 0;
 }
 
@@ -13,8 +13,8 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 1px 6px;
-  border-radius: 2px;
+  padding: 2px 8px;
+  border-radius: 4px;
   display: inline-block;
   width: fit-content;
 }
@@ -23,18 +23,20 @@
 .thinkingIndicator {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-dim);
-  padding-top: 4px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
 }
 
 .thinkDot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--text-dim);
+  background: var(--accent);
   animation: pulseDot 1.2s ease infinite;
   display: inline-block;
 }
@@ -48,49 +50,59 @@
 
 /* MOTIVE — dim, peripheral radar */
 .motive {
-  padding: 2px 0;
+  padding: 6px 12px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  background: rgba(85, 85, 85, 0.04);
+  border-radius: 8px;
+  border-left: 2px solid rgba(85, 85, 85, 0.15);
 }
 .motiveLabel {
-  color: var(--text-dim);
-  background: rgba(85,85,85,0.08);
+  color: #888;
+  background: rgba(85, 85, 85, 0.10);
 }
 .motiveText {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 12px;
   color: #777;
   font-style: italic;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 /* DELIVERY — cyan, pacing directive */
 .delivery {
-  padding: 2px 0;
+  padding: 6px 12px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  background: rgba(102, 204, 204, 0.03);
+  border-radius: 8px;
+  border-left: 2px solid rgba(102, 204, 204, 0.20);
 }
 .deliveryLabel {
   color: #66cccc;
-  background: rgba(102,204,204,0.06);
+  background: rgba(102, 204, 204, 0.10);
 }
 .deliveryText {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 12px;
   color: #55bbbb;
   font-style: italic;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 /* THE MOVE — massive green, primary attack */
 .move {
-  padding: 6px 0;
+  padding: 12px 16px;
+  background: rgba(0, 255, 136, 0.04);
+  border-radius: 10px;
+  border-left: 3px solid var(--accent);
 }
 .moveLabel {
   color: var(--accent);
-  background: rgba(0,255,136,0.08);
+  background: rgba(0, 255, 136, 0.12);
+  font-size: 10px;
 }
 .moveContent :global(.bullet .text),
 .moveContent > div > div > span:last-child {
@@ -101,17 +113,18 @@
 
 /* THE BAIT — amber, breadcrumbing */
 .bait {
-  padding: 4px 0;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 4px;
-  border-left: 2px solid #ddaa00;
-  padding-left: 8px;
+  margin-top: 2px;
+  background: rgba(221, 170, 0, 0.04);
+  border-left: 3px solid #ddaa00;
+  border-radius: 8px;
 }
 .baitLabel {
   color: #ddaa00;
-  background: rgba(221,170,0,0.08);
+  background: rgba(221, 170, 0, 0.12);
 }
 .baitContent > div > div > span:last-child {
   font-size: 1rem;
@@ -122,17 +135,18 @@
 
 /* THE DIAGNOSTIC — ice blue */
 .diagnostic {
-  padding: 4px 0;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 4px;
-  border-left: 2px solid #4488ff;
-  padding-left: 8px;
+  margin-top: 2px;
+  background: rgba(68, 136, 255, 0.04);
+  border-left: 3px solid #4488ff;
+  border-radius: 8px;
 }
 .diagLabel {
   color: #4488ff;
-  background: rgba(68,136,255,0.08);
+  background: rgba(68, 136, 255, 0.12);
 }
 .diagContent > div > div > span:last-child {
   font-size: 1rem;
@@ -144,13 +158,15 @@
 
 .override {
   border-left: 3px solid #ff2222;
-  padding-left: 10px;
+  padding: 12px 14px;
+  background: rgba(255, 34, 34, 0.04);
+  border-radius: 8px;
   animation: overridePulse 2s ease infinite;
 }
 
 @keyframes overridePulse {
-  0%, 100% { border-left-color: #ff2222; }
-  50% { border-left-color: #ff4444aa; }
+  0%, 100% { border-left-color: #ff2222; box-shadow: 0 0 10px rgba(255, 34, 34, 0.05); }
+  50% { border-left-color: #ff4444aa; box-shadow: 0 0 20px rgba(255, 34, 34, 0.10); }
 }
 
 .courseCorrect {
@@ -161,7 +177,7 @@
 }
 .ccLabel {
   color: #ff2222;
-  background: rgba(255,34,34,0.15);
+  background: rgba(255, 34, 34, 0.15);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.2em;

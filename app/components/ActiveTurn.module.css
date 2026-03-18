@@ -1,27 +1,45 @@
-/* ── ActiveTurn — Hot streaming receiver ── */
+/* ── ActiveTurn — Hot streaming receiver (UPGRADED) ── */
 
 .container {
-  padding: 10px 0;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  background: rgba(0, 255, 136, 0.02);
+  border: 1px solid rgba(0, 255, 136, 0.10);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.03);
+  animation: activeGlow 2s ease infinite;
+}
+
+@keyframes activeGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.03); }
+  50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.06); }
 }
 
 /* Partial (interim STT) text */
 .partial {
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 4px 0;
+  gap: 4px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border-left: 2px solid var(--text-muted);
 }
 
 .partialText {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-dim);
   font-style: italic;
+  line-height: 1.5;
 }
 
 .cursor {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--accent);
   animation: blink 0.8s step-end infinite;
 }

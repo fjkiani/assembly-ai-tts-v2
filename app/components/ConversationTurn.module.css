@@ -1,42 +1,55 @@
-/* ── ConversationTurn — Single Q&A pair ── */
+/* ── ConversationTurn — Single Q&A pair (UPGRADED) ── */
 
 .turn {
-  padding: 10px 0;
-  border-bottom: 1px solid #111;
-  animation: turnIn 0.2s ease;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 255, 136, 0.06);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: turnIn 0.3s ease;
+  transition: border-color 0.2s;
+}
+
+.turn:hover {
+  border-color: rgba(0, 255, 136, 0.12);
 }
 
 .question {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .qLabel {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  color: var(--text-muted);
-  background: #111;
-  padding: 1px 5px;
-  border-radius: 2px;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 8px;
+  border-radius: 4px;
   flex-shrink: 0;
   margin-top: 1px;
+  letter-spacing: 0.05em;
 }
 
 .qText {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-dim);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .response {
-  padding-left: 24px;
+  padding-left: 0;
 }
 
 @keyframes turnIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }

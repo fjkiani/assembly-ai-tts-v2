@@ -63,7 +63,7 @@ html, body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  background: linear-gradient(175deg, #000000 0%, #020804 50%, #000000 100%);
   position: relative;
 }
 
@@ -71,7 +71,7 @@ html, body {
 .copilot-thread {
   flex: 1 1 0;
   overflow-y: auto;
-  padding: 8px 16px;
+  padding: 12px 24px;
   scroll-behavior: smooth;
 }
 
