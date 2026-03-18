@@ -62,11 +62,11 @@ function deepMergeProfilerState(currentState, delta) {
     state.alpha_telemetry.pillars_missing = allPillars.filter(p => !deployed.has(p));
   }
 
-  // Update off-script status
-  if (delta.new_off_script?.detected) {
-    state.alpha_telemetry.is_off_script = true;
-    state.alpha_telemetry.off_script_reason = delta.new_off_script.reason;
-  }
+  // Off-script is TRANSIENT — resets each chunk. Only flagged if THIS chunk detects it.
+  state.alpha_telemetry.is_off_script = delta.new_off_script?.detected || false;
+  state.alpha_telemetry.off_script_reason = delta.new_off_script?.detected
+    ? delta.new_off_script.reason
+    : null;
 
   // Always update phase
   if (delta.conversation_phase) state.conversation_phase = delta.conversation_phase;
