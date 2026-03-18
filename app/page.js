@@ -26,6 +26,7 @@ import RamblingBanner from './components/RamblingBanner';
 import StatusBar from './components/StatusBar';
 import ControlBar from './components/ControlBar';
 import CapabilityPanel from './components/CapabilityPanel';
+import SessionSetup from './components/SessionSetup';
 import HistoricalThread from './components/HistoricalThread';
 import ActiveTurn from './components/ActiveTurn';
 import FollowUpPanel from './components/FollowUpPanel';
@@ -41,6 +42,7 @@ export default function CopilotPage() {
     autoCopilot: true,        // Auto-fire copilot on end_of_turn
   });
   const [modesOpen, setModesOpen] = useState(false);
+  const [sessionContext, setSessionContext] = useState(null);
 
   const toggleCapability = useCallback((key) => {
     setCapabilities(prev => ({ ...prev, [key]: !prev[key] }));
@@ -51,7 +53,7 @@ export default function CopilotPage() {
     copilotLatency, bulletHistory, metrics, status, error,
     held, speakingStartRef, profilerState, activeQuestion,
     start, stop, toggleHold, flushActiveContext,
-  } = useTranscription(capabilities);
+  } = useTranscription(capabilities, sessionContext);
 
   const [mode, setMode] = useState('copilot');
   const [followUp, setFollowUp] = useState('');
@@ -206,6 +208,13 @@ export default function CopilotPage() {
       />
 
       {error && <div className="copilot-error">⚠ {error}</div>}
+
+      {/* ── Session setup (pre-start context injection) ── */}
+      <SessionSetup
+        onContextReady={setSessionContext}
+        isStreaming={isStreaming}
+        sessionContext={sessionContext}
+      />
 
       {/* ── Scrollable conversation area ── */}
       <div className="copilot-thread" ref={threadRef}>

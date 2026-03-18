@@ -122,6 +122,8 @@ async function streamAndObserve(pcmBuffer, token) {
       sample_rate: String(SAMPLE_RATE),
       speech_model: 'u3-rt-pro',
       language_detection: 'true',
+      max_turn_silence: '3500',
+      prompt: 'Technical job interview between two speakers. Speakers may pause mid-question.',
     });
     if (DOMAIN_KEYTERMS.length > 0) {
       wsParams.append('keyterms_prompt', JSON.stringify(DOMAIN_KEYTERMS));
