@@ -194,6 +194,7 @@ export default function CopilotPage() {
         modesOpen={modesOpen}
         onStart={start}
         onStop={stop}
+        onRescue={triggerRescue}
         onGenerateFollowUp={generateFollowUp}
         onToggleModes={() => setModesOpen(prev => !prev)}
       />

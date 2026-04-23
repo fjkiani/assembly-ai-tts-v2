@@ -1,11 +1,12 @@
 /**
- * ControlBar — Session START/STOP + Follow-Up + Modes toggle
- * 
- * Props: { isStreaming, hasHistory, followUpLoading, modesOpen, onStart, onStop, onGenerateFollowUp, onToggleModes }
+ * ControlBar — Session START/STOP + Rescue + Follow-Up + Modes toggle
+ *
+ * Props: { isStreaming, hasHistory, followUpLoading, modesOpen,
+ *          onStart, onStop, onRescue, onGenerateFollowUp, onToggleModes }
  */
 import styles from './ControlBar.module.css';
 
-export default function ControlBar({ isStreaming, hasHistory, followUpLoading, modesOpen, onStart, onStop, onGenerateFollowUp, onToggleModes }) {
+export default function ControlBar({ isStreaming, hasHistory, followUpLoading, modesOpen, onStart, onStop, onRescue, onGenerateFollowUp, onToggleModes }) {
   return (
     <div className={styles.bar}>
       {!isStreaming ? (
@@ -13,6 +14,18 @@ export default function ControlBar({ isStreaming, hasHistory, followUpLoading, m
       ) : (
         <button className={`${styles.btn} ${styles.stop}`} onClick={onStop}>■ STOP</button>
       )}
+
+      {/* Rescue button — only visible while a session is active */}
+      {isStreaming && (
+        <button
+          className={`${styles.btn} ${styles.rescue}`}
+          onClick={onRescue}
+          title="Instantly fire copilot in rescue mode (also: Spacebar)"
+        >
+          🆘 RESCUE
+        </button>
+      )}
+
       {hasHistory && (
         <button
           className={`${styles.btn} ${styles.followup}`}

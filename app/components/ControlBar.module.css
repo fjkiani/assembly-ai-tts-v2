@@ -39,6 +39,32 @@
   background: #ff5566;
 }
 
+.rescue {
+  background: transparent;
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  animation: rescuePulse 2s ease-in-out infinite;
+}
+
+.rescue:hover {
+  background: rgba(255, 68, 68, 0.15);
+  border-color: #ff6666;
+  color: #ff6666;
+  animation: none;
+}
+
+.rescue:active {
+  background: rgba(255, 68, 68, 0.3);
+  transform: scale(0.97);
+}
+
+@keyframes rescuePulse {
+  0%, 100% { border-color: #ff4444; color: #ff4444; }
+  50%       { border-color: #ff8888; color: #ff8888; box-shadow: 0 0 6px rgba(255, 68, 68, 0.4); }
+}
+
 .followup {
   background: transparent;
   border: 1px solid #4488ff;
