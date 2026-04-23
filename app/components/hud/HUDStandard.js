@@ -1,8 +1,8 @@
 /**
- * HUDStandard — Standard HUD renderer (no BAIT)
- * 
- * Renders: [MOTIVE] → [DELIVERY] → [THE MOVE] → [THE DIAGNOSTIC]
- * 
+ * HUDStandard — Standard HUD renderer
+ *
+ * Renders: [MOTIVE] → [DELIVERY] → [THE MOVE] → [THE BAIT]
+ *
  * Props: { parsed } — output of parseHUDSections with phase='hud'
  */
 import { parseSegments } from '@/lib/parseHUD';
@@ -11,29 +11,29 @@ import styles from './HUDResponse.module.css';
 
 export default function HUDStandard({ parsed }) {
   return (
-    <div className={styles.container}>
+    <div className={styles.hudStandard}>
       {parsed.motive && (
-        <div className={styles.motive}>
-          <span className={`${styles.label} ${styles.motiveLabel}`}>MOTIVE</span>
-          <span className={styles.motiveText}>{parsed.motive}</span>
+        <div className={styles.section}>
+          <span className={styles.label}>MOTIVE</span>
+          <p className={styles.text}>{parsed.motive}</p>
         </div>
       )}
       {parsed.delivery && (
-        <div className={styles.delivery}>
-          <span className={`${styles.label} ${styles.deliveryLabel}`}>DELIVERY</span>
-          <span className={styles.deliveryText}>{parsed.delivery}</span>
+        <div className={styles.section}>
+          <span className={styles.label}>DELIVERY</span>
+          <p className={styles.text}>{parsed.delivery}</p>
         </div>
       )}
       {parsed.move && (
-        <div className={styles.move}>
-          <span className={`${styles.label} ${styles.moveLabel}`}>THE MOVE</span>
-          <RenderSegments segments={parseSegments(parsed.move)} className={styles.moveContent} />
+        <div className={styles.section}>
+          <span className={styles.label}>THE MOVE</span>
+          <RenderSegments segments={parseSegments(parsed.move)} />
         </div>
       )}
-      {parsed.diagnostic && (
-        <div className={styles.diagnostic}>
-          <span className={`${styles.label} ${styles.diagLabel}`}>DIAGNOSTIC</span>
-          <RenderSegments segments={parseSegments(parsed.diagnostic)} className={styles.diagContent} />
+      {parsed.bait && (
+        <div className={styles.section}>
+          <span className={styles.label}>THE BAIT</span>
+          <p className={styles.text}>{parsed.bait}</p>
         </div>
       )}
     </div>
