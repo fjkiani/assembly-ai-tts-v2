@@ -8,7 +8,7 @@
  */
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { buildTacticalPrompt, buildTerminalModePrompt, buildUserMessage } from '../../../lib/buildSystemPrompt';
+import { buildTacticalPrompt, buildUserMessage } from '../../../lib/buildSystemPrompt';
 
 function getKnowledgeBase() {
   try {
@@ -37,9 +37,15 @@ export async function POST(request) {
       'whiteboard', 'debugging'].some(p => profilerPhase.includes(p));
     const isCodingPhase = terminalMode || profilerSaysCoding;
 
-    const systemPrompt = isCodingPhase
-      ? buildTerminalModePrompt(kb)
-      : buildTacticalPrompt(kb, profilerState || null, clientTelemetry || {}, speaker || 'interviewer');
+    const systemPrompt = buildTacticalPrompt({
+      profilerState: profilerState || null,
+      speaker: speaker || 'interviewer',
+      terminalMode: isCodingPhase,
+      isRescue: !!(clientTelemetry?.isRescue),
+      isCourseCorrect: false,
+      isCandidateSupport: speaker === 'candidate',
+      clientTelemetry: clientTelemetry || {},
+    });
 
     const maxTokens = isCodingPhase ? 2048 : 1000;
     if (isCodingPhase) {
@@ -49,18 +55,28 @@ export async function POST(request) {
     // Build multi-turn messages
     const messages = [{ role: 'system', content: systemPrompt }];
 
+    // history is now an array of normalized turn objects: { role, turn_order, text, avg_confidence }
+    // Map each turn to a user/assistant message based on its role
     if (history && Array.isArray(history)) {
       for (const turn of history) {
-        messages.push({ role: 'user', content: turn.question });
-        // Send rawResponse if available, otherwise join bullets
-        const response = turn.rawResponse || (turn.response && turn.response.join('\n')) || '';
-        if (response) {
-          messages.push({ role: 'assistant', content: response });
+        const msgRole = turn.role === 'interviewer' ? 'user' : 'assistant';
+        const content = turn.text || turn.question || '';
+        if (content) {
+          messages.push({ role: msgRole, content });
         }
       }
     }
 
-    messages.push({ role: 'user', content: buildUserMessage(text, '', clipboardCode || '', speaker || 'interviewer') });
+    messages.push({ role: 'user', content: buildUserMessage({
+      transcript: text,
+      speaker: speaker || 'interviewer',
+      mode: isCodingPhase ? 'terminal' : 'standard',
+      topicAnchor: clientTelemetry?.topicAnchor || null,
+      turnId: clientTelemetry?.turnId || null,
+      clipboardCode: clipboardCode || null,
+      contextState: null,
+      recentTurns: clientTelemetry?.recentTurns || [],
+    }) });
 
     const provider = (process.env.LLM_PROVIDER || 'cohere').toLowerCase();
 
