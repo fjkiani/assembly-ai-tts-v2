@@ -44,11 +44,15 @@ export async function POST(request) {
       isRescue: !!(clientTelemetry?.isRescue),
       isCourseCorrect: false,
       isCandidateSupport: speaker === 'candidate',
+      isCodeWriteRequest: !!(clientTelemetry?.isCodeWriteRequest),
       clientTelemetry: clientTelemetry || {},
     });
 
-    const maxTokens = isCodingPhase ? 2048 : 1000;
-    if (isCodingPhase) {
+    const isCodeWrite = !!(clientTelemetry?.isCodeWriteRequest);
+    const maxTokens = isCodeWrite ? 3000 : isCodingPhase ? 2048 : 1000;
+    if (isCodeWrite) {
+      console.log('[route] CODE-GEN MODE — writing actual implementation');
+    } else if (isCodingPhase) {
       console.log(`[route] TERMINAL MODE ACTIVE (manual=${!!terminalMode}, profiler=${profilerSaysCoding})`);
     }
 
