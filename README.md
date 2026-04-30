@@ -2,6 +2,16 @@
 
 Real-time AI copilot for technical interviews. Transcribes audio via AssemblyAI Universal-3 streaming, generates tactical coaching via Cohere/Groq LLMs, and displays a structured HUD overlay.
 
+## Gateway document (read this first)
+
+**Cursor agents, contractors, and anyone touching backend or orchestration:** start here — not only this README.
+
+| Doc | Purpose |
+|-----|---------|
+| [`docs/BACKEND_AGENTIC_FRAMEWORK_ROADMAP.mdc`](docs/BACKEND_AGENTIC_FRAMEWORK_ROADMAP.mdc) | **Architecture contract**: current API routes, why the single-stream LLM pipeline hits a ceiling, failure modes, gaps vs sales/medical frameworks (MEDDPICC, SPIN), and the phased plan for multi-agent / multi-model work. |
+
+That file is the **single entry point** for extending `app/api/**`, `lib/**`, prompts, and future framework engines.
+
 ## Features
 
 - **Real-time STT** — AssemblyAI Universal-3 Pro streaming (WebSocket)
