@@ -1,0 +1,347 @@
+---
+description: Backend architecture, gaps, and roadmap for agentic multi-model sales frameworks (MEDDPICC/MEDIC, SPIN, prep + live alignment). Section 0 explains in plain language why single-LLM pipelines kept failing and why multi-agent orchestration is required—not optional polish.
+globs:
+  - web/app/api/**/*.js
+  - web/lib/**/*.js
+---
+
+# Backend & Agentic Framework Roadmap
+
+This document is the **source of truth for downstream agents** extending this codebase from a single-stream “text dump” copilot into a **framework-aware, multi-model, agentic system** suitable for **high-stakes sales**: discovery calls, demos, QBRs, and technical sell-through — not only technical interviews.
+
+---
+
+## 0. Read this first — why we kept failing (plain English)
+
+This section exists because **technical route tables do not explain emotional reality**: builders iterate for weeks, “fixes” land, and the demo still feels broken. That is not always incompetence; it is often **the wrong shape of system** pretending to be finished.
+
+### 0.1 What the user actually needed vs what the code optimizes for
+
+**What high-stakes sales / demo / discovery actually requires:**
+
+- **Multiple parallel concerns**, all time-sensitive:
+  - Listen and remember what was *committed*.
+  - Track where we are in a methodology (e.g. SPIN stage, MEDDPICC gaps).
+  - Surface the *next best question* without derailing rapport.
+  - Handle sharp pivots (“Can you write the code?”) without forgetting the last ten minutes of biology + positioning.
+  - Keep guidance **short** while analysis might be **long**.
+
+**What this codebase primarily implements:**
+
+- One pipe: **audio → transcript snippet → single LLM call → streaming wall of formatted text**.
+- A **second** pipe (profiler) that updates “psychology” on a timer and eventually influences the first pipe.
+
+That mismatch is the core reason end-to-end never felt trustworthy: **the architecture is a paragraph generator with a side diary**, not a **team** that divides labor under pressure.
+
+### 0.2 Why it *looks* like “slop” (and what that really means)
+
+Calling code “slop” is usually frustration talking. More precisely:
+
+| Symptom you saw | What it usually means structurally |
+|-----------------|-----------------------------------|
+| Output jumps between [RESCUE], [STRENGTHEN], full paragraphs | One model is asked to **infer emotional state + pedagogy + mode** from **fragments** every time |
+| Same conversation “forgets” the thread | History is **truncated** or merged poorly; there is no **durable deal memory** |
+| UI stuck on “reasoning…” or empty | One stream carries **hidden reasoning + visible tags**; the UI must **guess** parse boundaries |
+| Profiler insights feel irrelevant or late | Profiler runs on **clock time**, not **conversation milestones**; copilot does not **wait** or **merge** deterministically |
+| “We added context injection / gates / buttons” but behavior barely improves | Those patches tune **symptoms** without changing the **single-writer bottleneck** |
+
+None of that is fixed by “more careful prompting” alone, because the failure is **orchestration**, not wording.
+
+### 0.3 The trap: every improvement fought the same ceiling
+
+Past iterations often followed this loop:
+
+1. **Observe failure** (mode thrash, truncation, drift).
+2. **Add a patch** (debounce timing, bookend memory, rescue button, strip `<THINK>` harder).
+3. **Ship** and discover a new failure mode because **the same LLM call still owns everything**.
+
+That loop feels like shipping; it is actually **local optimization on a global bottleneck**. That is why teams report “we tried everything” while the product still **dumps text** that arrives **too late**, **too long**, or **wrong mode**.
+
+### 0.4 Why we could not build MEDDPICC / SPIN / prep→live “end to end” on this spine
+
+Sales frameworks are not labels on a paragraph. They are **state machines + evidence**:
+
+- **MEDDPICC** needs persistent fields like “do we know economic buyer?” with **proof quotes** from the call — updated incrementally, not re-guessed each answer.
+- **SPIN** needs **ordering discipline** (you don’t jump to Need-payoff without grounded Problem/Implication).
+- **Prep → live** needs a **playbook object** that survives refresh, reconnect, and multi-device — not a JSON file baked in at build time.
+
+The current system has **no first-class object** for “deal state” or “framework coverage.” It has **messages** to one chat brain. So every framework feature becomes **prompt fantasy**: the model *describes* MEDDPICC; it does not **own** MEDDPICC.
+
+### 0.5 Why multi-agent is not “extra complexity” — it is how humans already run good calls
+
+A great seller running a tough call is not one brain doing twelve jobs at once. They **partition**:
+
+- **Ear** — track facts committed & risks.
+- **Coach** — decide what matters *right now*.
+- **Specialist** — pricing, security, clinical detail, demo script — only when triggered.
+
+Multi-agent architecture mirrors that split so each piece can be:
+
+- **Scoped** (small prompt, small failure domain),
+- **Timed** (fast classifier vs slow writer),
+- **Canceled** (live guidance preempts background analysis),
+- **Verified** (structured JSON / schema instead of regex on prose).
+
+### 0.6 What “done” looks like for the next team (so you stop looping)
+
+End-to-end is not “SSE works.” It is:
+
+1. **A persistent session object** (deal + playbook version + framework state).
+2. **A supervisor** that chooses *one primary user-visible action* per beat (not three paragraphs).
+3. **Specialists** invoked only when needed (objection handler, code/demo mode, framework updater).
+4. **Structured outputs** to UI (cards), not tag soup — so rendering cannot collapse silently.
+5. **Replay tests** that prove framework transitions on fixed transcripts.
+
+Until those exist, MEDDPICC/SPIN will remain **theatre** and live alignment will keep **choking** under real speech pace.
+
+---
+
+## 1. Product intent (target state)
+
+### 1.1 Primary use cases
+
+| Phase | User need | System behavior |
+|-------|-----------|-----------------|
+| **Prep** | Build playbook before the call | Ingest PDFs, decks, CRM fields, prior notes → structured KB → MEDDPICC/SPIN gaps, talk tracks, objection matrix |
+| **Live** | Stay aligned during call/demo | Streaming STT → intent + framework stage → prioritized coaching (not parallel unrelated analyses) |
+| **Post** | Debrief & next steps | Summarize against framework coverage; CRM-ready outputs |
+
+### 1.2 Sales methodologies to embed (non-exhaustive)
+
+- **MEDDPICC / MEDDIC** — Metrics, Economic buyer, Decision criteria/process, Paper process, Implicate pain, Champion, Competition (variants exist; normalize to one schema in product).
+- **SPIN** — Situation, Problem, Implication, Need-payoff.
+- **Challenger / Command of the Message** — Commercial insight, reframe, rational drowning — optional modules.
+
+The **current codebase is interview-centric** (tactical HUD: MOTIVE, DELIVERY, THE MOVE, RESCUE). Sales expansion requires **parallel framework schemas**, **stage detection**, and **non-blocking orchestration** so analysis never “chokes” live guidance.
+
+---
+
+## 2. Current backend inventory (Next.js App Router)
+
+All routes live under `web/app/api/`. Runtime: **Node** on the Next server; **no separate worker service**, **no message queue**, **no shared Redis** in-repo.
+
+### 2.1 Route map
+
+| Route | Method | Purpose | LLM | Streaming |
+|-------|--------|---------|-----|-----------|
+| `/api/token` | POST | Short-lived AssemblyAI token for browser WebSocket STT | No | JSON |
+| `/api/copilot` | POST | Main tactical copilot; SSE token stream | Cohere **or** Groq (`LLM_PROVIDER`) | SSE |
+| `/api/profiler` | POST | Behavioral “profiler”; merges JSON delta into `profilerState` | Same provider pattern | No |
+| `/api/generate-context` | POST | From pasted JD/context → STT `keyterms` + `prompt` | Same | No |
+| `/api/followup` | POST | Post-session markdown brief | Same | SSE |
+| `/api/translate` | POST | Translation proxy (legacy/alternate pipeline) | External | Varies |
+
+**Note:** If additional experiments added `/api/context` or similar locally, treat them as **optional** unless committed — agents should verify `web/app/api/` with `glob` before documenting dependencies.
+
+### 2.2 Environment variables (typical)
+
+- `ASSEMBLYAI_API_KEY` — Required for `/api/token`. **Must be set in deployment**; do not rely on any fallback in source.
+- `COHERE_API_KEY` / `GROQ_API_KEY` — Depending on `LLM_PROVIDER`.
+- `COHERE_MODEL`, `GROQ_MODEL` — Optional overrides.
+- `LLM_PROVIDER` — `cohere` | `groq` (and potentially extended).
+
+### 2.3 Knowledge base
+
+- File: `web/lib/knowledge_base.json`
+- Loaded synchronously in routes via `readFileSync` + `JSON.parse`.
+- Used by copilot, profiler, follow-up prompts (`buildSystemPrompt.js` and related).
+
+### 2.4 Prompt router (conceptual)
+
+- `web/lib/buildSystemPrompt.js` centralizes system prompts (profiler, tactical variants, terminal/coding mode, follow-up).
+- `/api/copilot` selects **one** system prompt per request based on `speaker`, `terminalMode`, `profilerState.conversation_phase`, and `clientTelemetry` flags (e.g. rescue, code-write).
+
+---
+
+## 3. End-to-end data flow (today)
+
+```
+Browser mic/system audio
+    → AssemblyAI WebSocket (token from POST /api/token)
+    → Client hooks accumulate turns / gates firing
+    → POST /api/copilot { text, speaker, history, profilerState, clipboardCode, terminalMode, clientTelemetry }
+    → Single LLM stream (SSE) → UI parses tagged text ([MOTIVE], [RESCUE], …)
+
+Parallel (often): every ~60s POST /api/profiler with transcript chunk → merges JSON into profilerState → fed into next copilot call.
+```
+
+**Critical characteristic:** The **dominant path is one LLM completing one long formatted string**. That is fundamentally why the product **“just dumps text”** and why **competing concerns** (profiler digest vs live tactical line vs framework checklist) **fight for the same latency budget and UI surface**.
+
+---
+
+## 4. Observed failure modes (“choking”)
+
+These align with real transcripts (e.g. domain-heavy dialogue + sudden “write the code” / mode swings):
+
+### 4.1 Single hot path
+
+- One streaming completion carries **reasoning + tags + bullets**. Frontend strips hidden blocks (e.g. `<THINK>`) while streaming; any stall or malformed tag boundary reads as “stuck” or empty visible output.
+
+### 4.2 Uncoordinated background work
+
+- Profiler runs on a **wall-clock interval**, not on **semantic idle** or **framework milestones**. Copilot may fire **before** profiler insights land → inconsistent “phase” and mismatched coaching.
+
+### 4.3 History compaction
+
+- Client sends **truncated / normalized** history (`history` shaped as turns). Middle context loss produces **topic drift** (e.g. established thread forgotten when the prompt window is wrong).
+
+### 4.4 Mode thrash
+
+- Modes ([RESCUE], [STRENGTHEN], course correct, coding) are **re-derived each turn** from prompt + partial transcript. Partial clauses look like “freeze” → unnecessary rescue. Explicit buyer questions (“Can you write the code?”) arrive late → abrupt pivots.
+
+### 4.5 No orchestration contract
+
+- There is **no job queue**, **no priorities**, **no cancellation semantics** between “analyze last 60s” vs “answer immediate buyer objection”. Everything is **best-effort fetch** from the UI.
+
+### 4.6 Single-model bottleneck
+
+- Same provider/path used for **cheap classification** (could be small/fast) and **heavy generation**. No routing by task cost/latency/reliability.
+
+---
+
+## 5. Gap analysis vs sales use case
+
+| Requirement | Today | Gap |
+|-------------|--------|-----|
+| Framework-aware coaching (MEDDPICC, SPIN) | Interview HUD tags | No first-class **stage model**, **coverage scoring**, or **playbook objects** |
+| Prep → live continuity | Session-local state; KB JSON | No durable **session store**, **deal object**, or **versioned playbook** |
+| Multi-agent | Profiler + Copilot only | No **supervisor**, **router**, or **specialists** (objections, pricing, security, demo script) |
+| Multi-model | One provider per deployment | No **task routing** (e.g. GPT-class vs Claude vs local classifier) |
+| Structured output | Markdown-ish sections | No enforced **JSON schema** / tool calls for machine-verifiable steps |
+| Latency isolation | Sequential SSE | Profiler + copilot can **block perception** of responsiveness |
+| Compliance / CRM | N/A | No integration hooks; future agents must design **audit logs** and **data residency** |
+
+---
+
+## 6. Target architecture (recommended)
+
+### 6.1 Principles
+
+1. **Separate “sense”, “decide”, “say”.**
+   - **Sense:** STT + diarization + turn boundaries + confidence.
+   - **Decide:** Small fast model or rules → framework stage, intent, priority.
+   - **Say:** One or more writers → user-visible coaching under constraints.
+
+2. **Structured events, not one prose blob.**
+   - Internal bus: `TranscriptFinal`, `BuyerQuestion`, `DemoStep`, `Objection`, `FrameworkGap`, `CoachEmit`.
+
+3. **Prioritized jobs with cancellation.**
+   - Live copilot **preempts** background analysis; analysis **updates state** without overwriting the active “say” stream unless versioned.
+
+4. **Durable session state.**
+   - Redis / Postgres / KV — not only `globalThis` or client-only refs. Include `sessionId`, `dealId`, `playbookVersion`.
+
+5. **Framework as data.**
+   - MEDDPICC fields as JSON; SPIN as ordered checklist with evidence snippets from transcript.
+
+### 6.2 Logical components
+
+```
+[STT Gateway] → [Turn Builder] → [Event Bus]
+                                      │
+          ┌───────────────────────────┼───────────────────────────┐
+          ▼                           ▼                           ▼
+ [Framework Tracker]          [Profiler Lite]              [Risk / Compliance]
+ (MEDDPICC/SPIN state)          (tone, talk-share)           (claims, PHI, promises)
+          │                           │                           │
+          └───────────────────────────┴───────────────────────────┘
+                                      ▼
+                            [Orchestrator / Router]
+                                      │
+              ┌───────────────────────┼───────────────────────┐
+              ▼                       ▼                       ▼
+      [Objection Agent]      [Demo Navigator]         [Technical Deep Dive]
+              │                       │                       │
+              └───────────────────────┴───────────────────────┘
+                                      ▼
+                         [Presenter / Formatter]
+                         (HUD cards, not raw dump)
+```
+
+### 6.3 Multi-model policy (example)
+
+| Task | Model class | Rationale |
+|------|-------------|-----------|
+| Turn boundary / urgency | Tiny classifier or rules | Sub-100ms |
+| Framework stage update | Small LLM JSON mode | Cheap, frequent |
+| Buyer objection handling | Strong reasoning model | Quality |
+| Code / architecture demo | Code-capable model | Accuracy |
+| Summarization / CRM note | Balanced model | Cost |
+
+---
+
+## 7. Phased implementation plan (for agents)
+
+### Phase A — Orchestration skeleton (no new models yet)
+
+- Introduce **explicit job types**: `LIVE_COACH`, `FRAMEWORK_UPDATE`, `POST_CALL_SUMMARY`.
+- **Never** run profiler and copilot blindly on the same tick without merge rules.
+- Add **idempotency keys** per utterance (`turn_id`, hash of text + speaker).
+
+### Phase B — Framework engine
+
+- Define schemas: `MeddpiccState`, `SpinState`, `Playbook`, `EvidenceRef` (timestamp + quote).
+- Add `/api/framework/sync` or equivalent: **incremental** updates from latest finalized turns only.
+
+### Phase C — Structured outputs
+
+- Replace “tags in prose” with **JSON chunks** over SSE or NDJSON: `{ "kind": "coach_card", "framework": "MEDDPICC", "field": "Champion", ... }`.
+- UI renders cards; **reasoning** stays internal or in collapsible panel.
+
+### Phase D — Multi-model router
+
+- Abstract `getLLMProvider(taskType)` in `web/lib/` with per-task config (provider, model, temperature, max_tokens).
+- Add **fallback chain** (primary fail → secondary).
+
+### Phase E — Prep pipeline
+
+- Ingestion service: PDF/deck → chunk → embed → retrieve into `knowledge_base` **per deal**, not only static JSON.
+- Prep UI: “gaps before call” generated **once**, stored; live mode **consumes** that plan.
+
+### Phase F — Enterprise hardening
+
+- Rate limits on `/api/token` and LLM routes; PII redaction; audit trail; tenant isolation.
+
+---
+
+## 8. Migration notes from interview HUD → sales HUD
+
+| Interview concept | Sales analogue |
+|-------------------|----------------|
+| Interviewer vs candidate | Buyer vs seller (still diarized) |
+| MOTIVE / DELIVERY / MOVE | **Buyer intent**, **talk track**, **next best question** |
+| RESCUE | **Talk track recovery** / bridge phrase |
+| Terminal mode | **Demo / whiteboard mode** |
+| Campaign pillars | **Value hypotheses**, **differentiators**, **proof points** |
+| Profiler | **Talk-share**, **sentiment**, **competition mentions** |
+
+Prompts in `buildSystemPrompt.js` should gain **mode templates** selected by `session.playbook.type`, not only `speaker === candidate`.
+
+---
+
+## 9. Testing & evaluation (agents must add)
+
+- **Replay harness:** fixed transcript JSON → expected framework state transitions.
+- **Latency budgets:** p95 time from `FinalTranscript` → first visible coach card.
+- **Mode stability:** rate of forbidden transitions (e.g. SPIN “Need-payoff” before Problem evidenced).
+- **Hallucination guardrails:** claims tied to `EvidenceRef` or marked **ungrounded**.
+
+---
+
+## 10. Security & ops reminders
+
+- **Never commit API keys.** `/api/token` must require env-configured keys only.
+- Streaming routes must **surface errors** to clients; silent truncation is unacceptable for enterprise demos.
+- Document **data flow** for SOC2-minded buyers: audio → vendor STT → app region → model vendor.
+
+---
+
+## 11. Summary
+
+**Today:** Next.js API routes + single-stream LLM copilot + periodic profiler + static KB JSON — optimized for **live interview tactical text**, not **framework-grounded sales orchestration**.
+
+**Tomorrow:** Event-driven orchestration, **framework state machines**, **structured multi-agent outputs**, **multi-model routing**, and **durable session/playbook storage** — so the system **guides** under pressure instead of **dumping** analysis that arrives too late or fights the live thread.
+
+Future agents should treat this file as the **architecture contract** when adding MEDDPICC/MEDIC, SPIN, prep flows, and multi-LLM specialization.
+
+**If anything in Sections 2–7 feels abstract, re-read Section 0** — it explains *why* incremental patches failed and *why* multi-agent structure is the exit from that loop.
