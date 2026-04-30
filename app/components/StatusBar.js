@@ -11,7 +11,7 @@ import styles from './StatusBar.module.css';
 const STATUS_LABELS = {
   idle: '', mic: 'Requesting mic...', auth: 'Authenticating...',
   connecting: 'Connecting...', listening: '', thinking: '', streaming: '',
-  ended: 'Session ended', disconnected: 'Disconnected',
+  paused: 'Paused', ended: 'Session ended', disconnected: 'Disconnected',
 };
 
 export default function StatusBar({ status, isStreaming, held, profilerState, copilotLatency, turnCount }) {

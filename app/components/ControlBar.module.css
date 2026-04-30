@@ -35,6 +35,24 @@
   color: #fff;
 }
 
+.pause {
+  background: #ffcc33;
+  color: #000;
+}
+
+.pause:hover {
+  background: #ffdb66;
+}
+
+.rescue {
+  background: #7a1cff;
+  color: #fff;
+}
+
+.rescue:hover {
+  background: #9150ff;
+}
+
 .stop:hover {
   background: #ff5566;
 }

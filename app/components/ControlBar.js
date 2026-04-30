@@ -1,17 +1,36 @@
 /**
  * ControlBar — Session START/STOP + Follow-Up + Modes toggle
  * 
- * Props: { isStreaming, hasHistory, followUpLoading, modesOpen, onStart, onStop, onGenerateFollowUp, onToggleModes }
+ * Props: { isStreaming, isPaused, hasHistory, followUpLoading, modesOpen, onStart, onStop, onPause, onResume, onRescue, onGenerateFollowUp, onToggleModes }
  */
 import styles from './ControlBar.module.css';
 
-export default function ControlBar({ isStreaming, hasHistory, followUpLoading, modesOpen, onStart, onStop, onGenerateFollowUp, onToggleModes }) {
+export default function ControlBar({
+  isStreaming,
+  isPaused,
+  hasHistory,
+  followUpLoading,
+  modesOpen,
+  onStart,
+  onStop,
+  onPause,
+  onResume,
+  onRescue,
+  onGenerateFollowUp,
+  onToggleModes,
+}) {
   return (
     <div className={styles.bar}>
-      {!isStreaming ? (
+      {!isStreaming && !isPaused ? (
         <button className={`${styles.btn} ${styles.start}`} onClick={onStart}>● START</button>
+      ) : isPaused ? (
+        <button className={`${styles.btn} ${styles.start}`} onClick={onResume}>▶ RESUME</button>
       ) : (
-        <button className={`${styles.btn} ${styles.stop}`} onClick={onStop}>■ STOP</button>
+        <>
+          <button className={`${styles.btn} ${styles.rescue}`} onClick={onRescue}>🚨 RESCUE</button>
+          <button className={`${styles.btn} ${styles.pause}`} onClick={onPause}>⏸ PAUSE</button>
+          <button className={`${styles.btn} ${styles.stop}`} onClick={onStop}>■ STOP</button>
+        </>
       )}
       {hasHistory && (
         <button

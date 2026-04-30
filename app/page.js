@@ -51,19 +51,35 @@ export default function CopilotPage() {
   const {
     isStreaming, transcripts, partialText, rawResponse,
     copilotLatency, bulletHistory, metrics, status, error,
-    held, speakingStartRef, profilerState, activeQuestion,
-    start, stop, toggleHold, flushActiveContext, triggerRescue,
+    held, isPaused, speakingStartRef, profilerState, activeQuestion,
+    start, stop, pause, resume, emergencyRescue, toggleHold, flushActiveContext, triggerRescue,
   } = useTranscription(capabilities, sessionContext);
 
   const [mode, setMode] = useState('copilot');
   const [followUp, setFollowUp] = useState('');
   const [followUpLoading, setFollowUpLoading] = useState(false);
   const threadRef = useRef(null);
+  const shouldAutoScrollRef = useRef(true);
 
-  // ── Auto-scroll when history or active response updates ──
+  // ── Auto-scroll only while user is at/near bottom ──
   useEffect(() => {
-    if (threadRef.current) threadRef.current.scrollTop = threadRef.current.scrollHeight;
-  }, [bulletHistory, rawResponse, status]);
+    const node = threadRef.current;
+    if (!node) return;
+    const onScroll = () => {
+      const distanceFromBottom = node.scrollHeight - node.scrollTop - node.clientHeight;
+      shouldAutoScrollRef.current = distanceFromBottom < 80;
+    };
+    node.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => node.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!threadRef.current) return;
+    if (shouldAutoScrollRef.current) {
+      threadRef.current.scrollTop = threadRef.current.scrollHeight;
+    }
+  }, [bulletHistory, rawResponse, partialText]);
 
   // ── Keyboard: ESC=cover, Space=hold, Ctrl+Shift+S=autoStealth ──
   // Keyboard shortcuts:
@@ -189,11 +205,15 @@ export default function CopilotPage() {
 
       <ControlBar
         isStreaming={isStreaming}
+        isPaused={isPaused}
         hasHistory={bulletHistory.length > 0}
         followUpLoading={followUpLoading}
         modesOpen={modesOpen}
         onStart={start}
         onStop={stop}
+        onPause={pause}
+        onResume={resume}
+        onRescue={emergencyRescue}
         onGenerateFollowUp={generateFollowUp}
         onToggleModes={() => setModesOpen(prev => !prev)}
       />
